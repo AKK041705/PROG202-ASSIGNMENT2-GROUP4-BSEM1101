@@ -65,9 +65,12 @@ class AppUser {
     this.vehicle,
     this.plate,
     this.verified = true,
-    this.currency = 'NLe',
+    String currency = 'NLe',
     this.country = 'Sierra Leone',
-  });
+    this.darkMode = false,
+    this.accentName = 'green',
+  })  : currency = currency,
+        homeCurrency = currency;
 
   final String username;
   final String password;
@@ -81,6 +84,13 @@ class AppUser {
 
   /// Currency shown beside prices ('NLe' means leones only).
   String currency;
+
+  /// The currency this user started with (used by Restore defaults).
+  final String homeCurrency;
+
+  /// This user's own look: dark mode and accent colour (an AccentOption name).
+  bool darkMode;
+  String accentName;
 
   /// Country found from the phone number.
   final String country;

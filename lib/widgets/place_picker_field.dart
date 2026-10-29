@@ -46,12 +46,13 @@ class _PlacePickerFieldState extends State<PlacePickerField> {
 
   Future<void> _openPicker() async {
     FocusScope.of(context).unfocus();
-    final picked = await Navigator.pushNamed<String>(
+    // The search screen sends the chosen place back with Navigator.pop.
+    final picked = await Navigator.pushNamed(
       context,
       AppRoutes.placePicker,
       arguments: widget.label,
     );
-    if (picked != null && mounted) {
+    if (picked is String && mounted) {
       _controller.text = picked;
       widget.onChanged(picked);
     }

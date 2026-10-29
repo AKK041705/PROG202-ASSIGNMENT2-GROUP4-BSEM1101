@@ -4,7 +4,9 @@ import '../../core/app_colors.dart';
 import '../../core/app_palette.dart';
 import '../../core/app_preferences.dart';
 import '../../services/currency_service.dart';
+import '../../core/ui_helpers.dart';
 import '../../state/app_state.dart';
+import '../../widgets/app_buttons.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_top_bar.dart';
 import '../../widgets/common_widgets.dart';
@@ -28,6 +30,12 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  NoteBox(
+                    text: AppState.instance.currentUser == null
+                        ? 'You are not logged in. These choices apply until you log in. After that your own saved settings are used.'
+                        : 'These settings are saved for your account only. Other people keep their own theme and currency.',
+                    icon: Icons.person_outline,
+                  ),
                   const SectionTitle('Appearance'),
                   AppCard(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -99,10 +107,7 @@ class SettingsScreen extends StatelessWidget {
                                   color: prefs.currency == code ? Colors.white : AppColors.textPrimary,
                                 ),
                                 showCheckmark: false,
-                                onSelected: (_) {
-                                  prefs.setCurrency(code);
-                                  AppState.instance.setUserCurrency(code);
-                                },
+                                onSelected: (_) => prefs.setCurrency(code),
                               ),
                           ],
                         ),
@@ -115,6 +120,22 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  SecondaryButton(
+                    label: 'Restore defaults',
+                    icon: Icons.restart_alt,
+                    onPressed: () async {
+                      final ok = await confirmAction(
+                        context,
+                        title: 'Restore defaults?',
+                        message: 'This switches back to light mode, the green accent and your own currency.',
+                        confirmLabel: 'Restore',
+                      );
+                      if (!ok || !context.mounted) return;
+                      prefs.restoreDefaults();
+                      showMessage(context, 'Default theme restored.');
+                    },
                   ),
                   const SizedBox(height: 12),
                   NoteBox(

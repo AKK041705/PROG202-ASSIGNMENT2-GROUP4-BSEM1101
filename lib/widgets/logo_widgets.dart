@@ -30,12 +30,16 @@ class LogoMarkPainter extends CustomPainter {
     required this.road,
     required this.pin,
     required this.ripple,
+    this.rotation = 0,
+    this.vehicle = 0,
   });
 
   final double tile; // 0..1 tile scale
   final double road; // 0..1 how much of the road is drawn
   final double pin; // 0..1 pin drop
   final double ripple; // 0..1 ripple spread
+  final double rotation; // radians the tile is turned by
+  final double vehicle; // 0..1 position of the little vehicle on the road (0 = hidden)
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -44,6 +48,7 @@ class LogoMarkPainter extends CustomPainter {
 
     canvas.save();
     canvas.translate(centre.dx, centre.dy);
+    canvas.rotate(rotation);
     canvas.scale(tile.clamp(0.0, 1.2));
     canvas.translate(-centre.dx, -centre.dy);
 
@@ -65,6 +70,14 @@ class LogoMarkPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     for (final metric in roadPath.computeMetrics()) {
       canvas.drawPath(metric.extractPath(0, metric.length * road.clamp(0.0, 1.0)), roadPaint);
+      // A small vehicle drives along the road while it is being drawn.
+      if (vehicle > 0 && vehicle < 1) {
+        final spot = metric.getTangentForOffset(metric.length * vehicle);
+        if (spot != null) {
+          canvas.drawCircle(spot.position, s * 0.062, Paint()..color = AppColors.blue);
+          canvas.drawCircle(spot.position, s * 0.032, Paint()..color = Colors.white);
+        }
+      }
     }
 
     // Ripple where the pin lands
@@ -119,7 +132,12 @@ class LogoMarkPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(LogoMarkPainter old) =>
-      old.tile != tile || old.road != road || old.pin != pin || old.ripple != ripple;
+      old.tile != tile ||
+      old.road != road ||
+      old.pin != pin ||
+      old.ripple != ripple ||
+      old.rotation != rotation ||
+      old.vehicle != vehicle;
 }
 
 /// Convenience: a fully drawn logo mark of a given size.

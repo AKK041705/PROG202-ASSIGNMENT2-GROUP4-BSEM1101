@@ -6,13 +6,14 @@ import 'app_preferences.dart';
 class Session {
   Session._();
 
-  /// Shows prices in the user's own currency (visitors from overseas).
+  /// Loads this user's own theme and currency.
   static void afterLogin(AppUser user) {
-    AppPreferences.instance.setCurrency(user.currency);
+    AppPreferences.instance.loadForUser(user);
   }
 
+  /// Logs out and returns the screen to the default look.
   static void logout() {
     AppState.instance.logout();
-    AppPreferences.instance.setCurrency('NLe');
+    AppPreferences.instance.resetForGuest();
   }
 }
