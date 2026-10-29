@@ -1,4 +1,3 @@
-@"
 # Flutter and Dart
 .dart_tool/
 .packages
@@ -34,4 +33,3 @@ build/
 *.log
 *.class
 .DS_Store
-"@ | Set-Content -Encoding utf8 .gitignore
