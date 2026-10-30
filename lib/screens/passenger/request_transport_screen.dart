@@ -36,6 +36,7 @@ class _RequestTransportScreenState extends State<RequestTransportScreen> {
   String? _mode;
   int _people = 1;
   int _freeSeats = 0;
+  late String _payCurrency = AppPreferences.instance.currency;
 
   @override
   void dispose() {
@@ -62,6 +63,7 @@ class _RequestTransportScreenState extends State<RequestTransportScreen> {
       showMessage(context, quote.unavailableReason ?? 'This option is not available', error: true);
       return;
     }
+    final total = FareService.requestTotal(quote, _mode!, _people, _perSeat ? _freeSeats : 0);
     final request = state.createRequest(
       pickup: _pickup!,
       destination: _destination!,
@@ -70,6 +72,8 @@ class _RequestTransportScreenState extends State<RequestTransportScreen> {
       freeSeats: _perSeat ? _freeSeats : 0,
       fareText: FareService.requestFareText(quote, _mode!, _people, _perSeat ? _freeSeats : 0),
       note: _noteController.text.trim(),
+      payCurrency: _payCurrency,
+      payAmount: total == null ? null : CurrencyService.amountIn(total, _payCurrency),
     );
     showMessage(context, 'Request ${request.id} sent. Waiting for a driver.');
     // Replace this form with the details screen of the new request.
@@ -172,6 +176,22 @@ class _RequestTransportScreenState extends State<RequestTransportScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  if (quote.isAvailable) ...[
+                    const SectionTitle('How will you pay?'),
+                    AppDropdown(
+                      label: 'Pay in',
+                      icon: Icons.payments_outlined,
+                      value: _payCurrency,
+                      items: CurrencyService.acceptedPayments,
+                      onChanged: (v) => setState(() => _payCurrency = v ?? 'NLe'),
+                    ),
+                    const SizedBox(height: 10),
+                    _PaymentCard(
+                      currency: _payCurrency,
+                      total: FareService.requestTotal(quote, _mode!, _people, _perSeat ? _freeSeats : 0),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                   if (quote.isAvailable && drivers == 0)
                     NoteBox(
                       text: 'No verified $driverType driver is registered yet. Your request will wait.',
@@ -197,6 +217,48 @@ class _RequestTransportScreenState extends State<RequestTransportScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Shows what the passenger will pay in the chosen currency.
+class _PaymentCard extends StatelessWidget {
+  const _PaymentCard({required this.currency, required this.total});
+
+  final String currency;
+  final double? total;
+
+  @override
+  Widget build(BuildContext context) {
+    if (total == null) {
+      return const NoteBox(text: 'This fare is agreed with the driver, so no amount can be shown yet.');
+    }
+    final amount = CurrencyService.amountIn(total!, currency);
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('You pay', style: TextStyle(color: AppColors.textSecondary)),
+          Text(
+            CurrencyService.money(amount, currency),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            currency == 'NLe'
+                ? 'Paid in leones.'
+                : 'Recorded in $currency and not converted to leones by the app. Indicative rate: 1 $currency = NLe ${CurrencyService.rateFor(currency).toStringAsFixed(2)}.',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13, height: 1.35),
+          ),
+          const SizedBox(height: 10),
+          NoteBox(
+            text: 'Prices are set in leones (NLe). This prototype takes no real payment. Accepting foreign currency in Sierra Leone must follow Bank of Sierra Leone rules.',
+            icon: Icons.gavel,
+            color: AppColors.amber,
+            background: AppColors.amberTint,
+          ),
+        ],
       ),
     );
   }

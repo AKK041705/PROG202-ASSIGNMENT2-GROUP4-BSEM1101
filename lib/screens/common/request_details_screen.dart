@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/ui_helpers.dart';
 import '../../models/models.dart';
+import '../../services/currency_service.dart';
 import '../../state/app_state.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/app_card.dart';
@@ -76,6 +77,7 @@ class RequestDetailsScreen extends StatelessWidget {
                         InfoRow('People', '${request.people}'),
                         InfoRow('Extra seats free', '${request.freeSeats}'),
                         InfoRow('Estimated fare', request.fareText),
+                        InfoRow('Payment', CurrencyService.paymentText(request.payCurrency, request.payAmount)),
                         if (request.note.isNotEmpty) InfoRow('Note', request.note),
                       ],
                     ),

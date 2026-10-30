@@ -139,6 +139,13 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   NoteBox(
+                    text: 'Prices are always set in leones (NLe). When you request a ride you can choose to pay in '
+                        'any accepted currency: ${CurrencyService.acceptedPayments.join(', ')}. A payment in another '
+                        'currency is recorded in that currency and is not converted to leones by this app.',
+                    icon: Icons.account_balance_wallet_outlined,
+                  ),
+                  const SizedBox(height: 12),
+                  NoteBox(
                     text: 'Exchange rates are Bank of Sierra Leone reference rates of '
                         '${CurrencyService.ratesDate}. They are indicative only and change every day, '
                         'so confirm the real rate at a bank or exchange bureau.',

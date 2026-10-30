@@ -103,19 +103,19 @@ class AppPalette {
         case AccentOption.green:
           main = const Color(0xFF16803C);
           deep = const Color(0xFF0E5A2A);
-          tint = const Color(0xFFE5F3EA);
+          tint = const Color(0xFFD3EBDC);
         case AccentOption.blue:
           main = const Color(0xFF0B6BB8);
           deep = const Color(0xFF084E87);
-          tint = const Color(0xFFE3F0FA);
+          tint = const Color(0xFFD3E6F6);
         case AccentOption.purple:
           main = const Color(0xFF6A3FB5);
           deep = const Color(0xFF4B2A86);
-          tint = const Color(0xFFEFE8FA);
+          tint = const Color(0xFFE4D9F6);
         case AccentOption.orange:
           main = const Color(0xFFC2570A);
           deep = const Color(0xFF8F3F05);
-          tint = const Color(0xFFFCEBDD);
+          tint = const Color(0xFFF9DDC6);
       }
     }
 
@@ -136,8 +136,8 @@ class AppPalette {
         background: const Color(0xFF0F1713),
         surface: const Color(0xFF18241D),
         border: const Color(0xFF2C3D33),
-        textPrimary: const Color(0xFFE9F1EC),
-        textSecondary: const Color(0xFFA3B5AA),
+        textPrimary: const Color(0xFFF1F7F3),
+        textSecondary: const Color(0xFFB4C4BA),
       );
     }
     return AppPalette(
@@ -145,19 +145,19 @@ class AppPalette {
       accent: main,
       accentDark: deep,
       accentTint: tint,
-      success: const Color(0xFF16803C),
-      successTint: const Color(0xFFE5F3EA),
-      info: const Color(0xFF0B6BB8),
-      infoTint: const Color(0xFFE3F0FA),
-      amber: const Color(0xFF9A5B00),
-      amberTint: const Color(0xFFFFF1D6),
-      red: const Color(0xFFC62828),
-      redTint: const Color(0xFFFBE6E6),
-      background: const Color(0xFFF4F7F5),
+      success: const Color(0xFF13703A),
+      successTint: const Color(0xFFD3EBDC),
+      info: const Color(0xFF0A5FA5),
+      infoTint: const Color(0xFFD3E6F6),
+      amber: const Color(0xFF8A4F00),
+      amberTint: const Color(0xFFFFE6B3),
+      red: const Color(0xFFB71C1C),
+      redTint: const Color(0xFFF8D4D4),
+      background: const Color(0xFFE6ECE8),
       surface: const Color(0xFFFFFFFF),
-      border: const Color(0xFFD9E2DD),
-      textPrimary: const Color(0xFF14261B),
-      textSecondary: const Color(0xFF5B6B62),
+      border: const Color(0xFFAEBDB4),
+      textPrimary: const Color(0xFF0B1A12),
+      textSecondary: const Color(0xFF3E4D44),
     );
   }
 }

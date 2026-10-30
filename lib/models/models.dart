@@ -168,6 +168,9 @@ class TransportRequest {
     required this.freeSeats,
     required this.fareText,
     this.note = '',
+    this.payCurrency = 'NLe',
+    this.payAmount,
+    this.payRate,
   });
 
   final String id;
@@ -179,6 +182,13 @@ class TransportRequest {
   final int freeSeats;
   final String fareText;
   final String note;
+
+  /// Currency the passenger chose to pay in, the amount in that currency, and the
+  /// indicative NLe-per-unit rate used. Foreign payments are recorded as they are
+  /// and are not converted to leones.
+  final String payCurrency;
+  final double? payAmount;
+  final double? payRate;
   RequestStatus status = RequestStatus.pending;
   String? driver;
   final List<String> declinedDrivers = [];

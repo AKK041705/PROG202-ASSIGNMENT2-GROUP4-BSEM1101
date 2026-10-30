@@ -67,15 +67,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Widget _ring(double size, double phase) {
     final t = ((_controller.value * 2.2) + phase) % 1.0;
-    return Opacity(
-      opacity: (1 - t) * 0.5,
-      child: Container(
-        width: size * (0.7 + t * 1.5),
-        height: size * (0.7 + t * 1.5),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.green, width: 2),
-        ),
+    // Fades by blending towards the background colour (no transparency layers,
+    // so it also works on phones and emulators with weak graphics).
+    final color = Color.lerp(AppColors.green, AppColors.surface, t)!;
+    return Container(
+      width: size * (0.7 + t * 1.5),
+      height: size * (0.7 + t * 1.5),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: color, width: 2),
       ),
     );
   }
@@ -127,41 +127,43 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     alignment: WrapAlignment.center,
                     children: [
                       for (var i = 0; i < _title.length; i++)
-                        Opacity(
-                          opacity: _letter(i),
-                          child: Transform.translate(
-                            offset: Offset(0, (1 - _letter(i)) * 16),
-                            child: Text(
-                              _title[i],
-                              style: TextStyle(
-                                fontSize: 27,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.green,
-                              ),
+                        Transform.translate(
+                          offset: Offset(0, (1 - _letter(i)) * 16),
+                          child: Text(
+                            _title[i],
+                            style: TextStyle(
+                              fontSize: 27,
+                              fontWeight: FontWeight.w800,
+                              color: Color.lerp(AppColors.surface, AppColors.green, _letter(i)),
                             ),
                           ),
                         ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Opacity(
-                    opacity: _tagline.value,
-                    child: Text(
-                      'Know your fare. Travel with confidence.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.textSecondary),
+                  Text(
+                    'Know your fare. Travel with confidence.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color.lerp(AppColors.surface, AppColors.textSecondary, _tagline.value),
                     ),
                   ),
                   const SizedBox(height: 28),
-                  SizedBox(
+                  Container(
                     width: 140,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: LinearProgressIndicator(
-                        value: _controller.value,
-                        minHeight: 4,
-                        color: AppColors.green,
-                        backgroundColor: AppColors.border,
+                    height: 4,
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: AppColors.border,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: FractionallySizedBox(
+                      widthFactor: _controller.value.clamp(0.0, 1.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.green,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ),
                   ),

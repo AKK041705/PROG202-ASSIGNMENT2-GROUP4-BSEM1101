@@ -33,6 +33,32 @@ class CurrencyService {
     }
   }
 
+  /// Currencies a passenger can pay in. The price is always set in leones (NLe);
+  /// a payment in another currency is recorded in that currency and is NOT
+  /// converted to leones by this app.
+  static const List<String> acceptedPayments = options;
+
+  /// NLe per 1 unit of [code] (1 for NLe itself).
+  static double rateFor(String code) => code == 'NLe' ? 1.0 : (nlePerUnit[code] ?? 1.0);
+
+  /// The amount to pay in [code] for a price of [nle] leones, rounded to 2 decimals.
+  static double amountIn(double nle, String code) {
+    final value = nle / rateFor(code);
+    return (value * 100).round() / 100;
+  }
+
+  /// "NLe 12.0" or "GBP 0.39".
+  static String money(double value, String code) {
+    return code == 'NLe' ? 'NLe ${value.toStringAsFixed(1)}' : '$code ${value.toStringAsFixed(2)}';
+  }
+
+  /// How a payment is described on screen.
+  static String paymentText(String code, double? amount) {
+    if (amount == null) return 'To be agreed with the driver';
+    if (code == 'NLe') return money(amount, code);
+    return '${money(amount, code)} (paid in $code, not converted to leones)';
+  }
+
   /// Converts a leone amount, or null when no other currency is chosen.
   static double? convert(double nle, String code) {
     final rate = nlePerUnit[code];

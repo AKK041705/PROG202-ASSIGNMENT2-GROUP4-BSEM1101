@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_routes.dart';
 import '../../models/models.dart';
+import '../../services/currency_service.dart';
 import '../../state/app_state.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/common_widgets.dart';
@@ -31,6 +32,14 @@ class AdminDashboardView extends StatelessWidget {
         final totalRequests = state.requests.length;
         final recent = state.requests.reversed.take(3).toList();
         final recentReports = state.reports.reversed.take(2).toList();
+
+        final payments = <String, double>{};
+        final paymentCounts = <String, int>{};
+        for (final r in state.requests) {
+          if (r.status == RequestStatus.cancelled || r.payAmount == null) continue;
+          payments[r.payCurrency] = (payments[r.payCurrency] ?? 0) + r.payAmount!;
+          paymentCounts[r.payCurrency] = (paymentCounts[r.payCurrency] ?? 0) + 1;
+        }
 
         final sources = <String, int>{};
         for (final t in state.tariffs) {
@@ -130,6 +139,38 @@ class AdminDashboardView extends StatelessWidget {
                     BarRow(label: 'Confirmed', value: count(RequestStatus.confirmed), total: totalRequests, color: AppColors.green),
                     BarRow(label: 'Completed', value: count(RequestStatus.completed), total: totalRequests, color: AppColors.success),
                     BarRow(label: 'Cancelled', value: count(RequestStatus.cancelled), total: totalRequests, color: AppColors.red),
+                  ],
+                ),
+              ),
+              const SectionTitle('Expected payments by currency'),
+              AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (payments.isEmpty) const Text('No payments yet.'),
+                    for (final entry in payments.entries)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${entry.key}  (${paymentCounts[entry.key]} request(s))',
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Text(
+                              CurrencyService.money(entry.value, entry.key),
+                              style: const TextStyle(fontWeight: FontWeight.w800),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Each currency is added up on its own. Nothing is converted to leones.',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    ),
                   ],
                 ),
               ),

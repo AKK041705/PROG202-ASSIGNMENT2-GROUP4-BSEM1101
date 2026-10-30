@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../data/fare_service.dart';
+import '../services/currency_service.dart';
 import '../services/phone_service.dart';
 import '../data/tariff_data.dart';
 import '../models/models.dart';
@@ -101,8 +102,10 @@ class AppState extends ChangeNotifier {
       int freeSeats = 0,
       required RequestStatus status,
       String? driver,
+      String payCurrency = 'NLe',
     }) {
       final q = quote(mode, pickup, destination);
+      final total = FareService.requestTotal(q, mode, people, freeSeats);
       final request = TransportRequest(
         id: 'REQ-${requests.length + 1}',
         passenger: passenger,
@@ -112,6 +115,9 @@ class AppState extends ChangeNotifier {
         people: people,
         freeSeats: freeSeats,
         fareText: FareService.requestFareText(q, mode, people, freeSeats),
+        payCurrency: payCurrency,
+        payAmount: total == null ? null : CurrencyService.amountIn(total, payCurrency),
+        payRate: CurrencyService.rateFor(payCurrency),
       );
       request.status = status;
       request.driver = driver;
@@ -154,6 +160,16 @@ class AppState extends ChangeNotifier {
       people: 2,
       status: RequestStatus.awaitingPassenger,
       driver: 'taxi1',
+    );
+
+    demoRequest(
+      passenger: 'sarah',
+      pickup: 'Freetown',
+      destination: 'Waterloo',
+      mode: 'Taxi (shared)',
+      people: 2,
+      status: RequestStatus.pending,
+      payCurrency: 'GBP',
     );
 
     final first = FareReport(
@@ -374,6 +390,8 @@ class AppState extends ChangeNotifier {
     required int freeSeats,
     required String fareText,
     String note = '',
+    String payCurrency = 'NLe',
+    double? payAmount,
   }) {
     final request = TransportRequest(
       id: 'REQ-${requests.length + 1}',
@@ -385,6 +403,9 @@ class AppState extends ChangeNotifier {
       freeSeats: freeSeats,
       fareText: fareText,
       note: note,
+      payCurrency: payCurrency,
+      payAmount: payAmount,
+      payRate: CurrencyService.rateFor(payCurrency),
     );
     requests.add(request);
     notifyListeners();

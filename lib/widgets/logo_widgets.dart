@@ -12,12 +12,16 @@ class AppLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pixels = (size * MediaQuery.devicePixelRatioOf(context)).round();
     return Image.asset(
       'assets/images/logo.png',
       width: size,
       height: size,
+      cacheWidth: pixels,
       fit: BoxFit.contain,
       semanticLabel: 'Salone Transport Hub logo',
+      // If a phone or emulator cannot decode the picture, draw the logo in code instead.
+      errorBuilder: (context, error, stackTrace) => StaticLogoMark(size: size),
     );
   }
 }
