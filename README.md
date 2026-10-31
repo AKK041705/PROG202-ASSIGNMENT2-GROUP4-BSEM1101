@@ -91,8 +91,8 @@ Fix anything marked with a red cross. If it complains about Android licences, ru
 Choose a simple folder such as `C:\Projects` (avoid OneDrive folders, which can slow or break builds):
 
 ```
-git clone https://github.com/AKK041705/PROG202-ASSIGNMENT2-GROUP4-BSEM1101.git
-cd PROG202-ASSIGNMENT2-GROUP4-BSEM1101
+git clone https://github.com/AKK041705/PROG202-ASSIGNMENT2-GROUP3-BSEM1101.git
+cd PROG202-ASSIGNMENT2-GROUP3-BSEM1101
 ```
 
 If `pubspec.yaml` is not in this folder, `cd` into the subfolder that contains it.
@@ -234,7 +234,7 @@ Add the screenshots to `docs/screenshots/` and list them here.
 
 ## GitHub Information
 
-- Repository: https://github.com/AKK041705/PROG202-ASSIGNMENT2-GROUP4-BSEM1101
+- Repository: https://github.com/AKK041705/PROG202-ASSIGNMENT2-GROUP3-BSEM1101
 - Earlier stage: Assignment 1 – Dart console prototype
   🔗 https://github.com/AKK041705/salone-transport-hub.git
 
